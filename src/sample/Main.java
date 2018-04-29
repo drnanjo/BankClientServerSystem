@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -45,6 +46,10 @@ public class Main extends Application {
         Button buttonQuit = new Button("Quit");
         buttonQuit.setPrefSize(100, 20);
 
+        buttonBalance.setDisable(true);
+        buttonDeposit.setDisable(true);
+        buttonWithdraw.setDisable(true);
+
         hbox.getChildren().addAll(buttonBalance, buttonDeposit, buttonWithdraw, buttonQuit);
 
         return hbox;
@@ -82,10 +87,11 @@ public class Main extends Application {
     }
 
     private void setButtonListeners(HBox hbox, VBox vbox){
-        //Can use index 0 - 2 because there are only 3 buttons and they inserted in that order
+        //Can use index 0 - 3 because there are only 3 buttons and they inserted in that order
         Button balance = (Button) hbox.getChildren().get(0);
         Button deposit = (Button) hbox.getChildren().get(1);
         Button withdraw = (Button) hbox.getChildren().get(2);
+        Button quit = (Button) hbox.getChildren().get(3);
 
         balance.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -132,6 +138,13 @@ public class Main extends Application {
                     bank.withdraw(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
                     balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
                 }
+            }
+        });
+
+        quit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Platform.exit();
             }
         });
     }
