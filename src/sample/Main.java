@@ -80,8 +80,18 @@ public class Main extends Application {
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(pStage);
         VBox dialogBox = new VBox(20);
-        dialogBox.getChildren().add(new Text(msg));
-        Scene dialogScene = new Scene(dialogBox, 300, 50);
+        //dialogBox.getChildren().add(new Text(msg));
+
+        Button close = new Button("Close");
+        close.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                dialog.close();
+            }
+        });
+
+        dialogBox.getChildren().addAll(new Text(msg), close);
+        Scene dialogScene = new Scene(dialogBox, 300, 100);
         dialog.setScene(dialogScene);
         dialog.show();
     }
@@ -99,7 +109,11 @@ public class Main extends Application {
 
                 TextField account = (TextField) vbox.getChildren().get(2);
                 Label balance = (Label) vbox.getChildren().get(0);
-                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+
+                if(account.getText().equals(""))
+                    showPopup("Must input account number");
+                else
+                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
 
                 /*if(server == null)
                     showPopup(" Client has not been connected to server yet");
@@ -119,8 +133,13 @@ public class Main extends Application {
                 Label balance = (Label) vbox.getChildren().get(0);
                 TextField amount = (TextField) vbox.getChildren().get(4);
 
-                bank.deposit(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
-                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                if(account.getText().equals("") || amount.getText().equals(""))
+                    showPopup("Must input account number and amount");
+                else {
+                    bank.deposit(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
+                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                }
+
 
                 /*if(server == null)
                     showPopup(" Client has not been connected to server yet");
@@ -143,8 +162,12 @@ public class Main extends Application {
                 Label balance = (Label) vbox.getChildren().get(0);
                 TextField amount = (TextField) vbox.getChildren().get(4);
 
-                bank.withdraw(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
-                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                if(account.getText().equals("") || amount.getText().equals(""))
+                    showPopup("Must input account number and amount");
+                else {
+                    bank.withdraw(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
+                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                }
 
                 /*if(server == null)
                     showPopup(" Client has not been connected to server yet");
@@ -167,11 +190,18 @@ public class Main extends Application {
         });
     }
 
-    private void setUpServer(){
+    private void setUpServer(HBox hbox){
         new Thread(new Runnable() {
             @Override
             public void run() {
 
+                Button balance = (Button) hbox.getChildren().get(0);
+                Button deposit = (Button) hbox.getChildren().get(1);
+                Button withdraw = (Button) hbox.getChildren().get(2);
+
+                balance.setDisable(false);
+                deposit.setDisable(false);
+                withdraw.setDisable(false);
             }
         }).start();
     }
@@ -183,6 +213,7 @@ public class Main extends Application {
         VBox vbox = addVBox();
 
         setButtonListeners(hbox, vbox);
+        setUpServer(hbox);
 
         pane.setBottom(hbox);
         pane.setCenter(vbox);
