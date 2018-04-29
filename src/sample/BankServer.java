@@ -14,6 +14,11 @@ public class BankServer implements Runnable {
         this.bank = bank;
     }
 
+    public BankServer(Bank bank){
+        s = null;
+        this.bank = bank;
+    }
+
     public BankServer(){
         s = null;
         bank = new Bank();
