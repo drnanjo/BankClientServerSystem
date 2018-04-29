@@ -25,8 +25,9 @@ import java.net.ServerSocket;
 public class Main extends Application {
 
     private static Stage pStage;
-    private Bank bank;
-    private BankServer server = null;
+    //private Bank bank;
+    //private BankServer server = null;
+    private Controller controller;
     //private VBox vbox;
 
     private HBox addHBox(){
@@ -113,7 +114,8 @@ public class Main extends Application {
                 if(account.getText().equals(""))
                     showPopup("Must input account number");
                 else
-                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                    /*balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));*/
+                    controller.sendCommand("balance " + account.getText());
 
                 /*if(server == null)
                     showPopup(" Client has not been connected to server yet");
@@ -136,8 +138,10 @@ public class Main extends Application {
                 if(account.getText().equals("") || amount.getText().equals(""))
                     showPopup("Must input account number and amount");
                 else {
-                    bank.deposit(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
-                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                    /*bank.deposit(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
+                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));*/
+
+                    controller.sendCommand("deposit " + account.getText() + " " + amount.getText());
                 }
 
 
@@ -165,8 +169,10 @@ public class Main extends Application {
                 if(account.getText().equals("") || amount.getText().equals(""))
                     showPopup("Must input account number and amount");
                 else {
-                    bank.withdraw(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
-                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                    /*bank.withdraw(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
+                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));*/
+
+                    controller.sendCommand("withdraw " + account.getText() + " " + amount.getText());
                 }
 
                 /*if(server == null)
@@ -195,6 +201,11 @@ public class Main extends Application {
             @Override
             public void run() {
 
+                /*server = new BankServer();
+                server.run();*/
+
+                //controller.startServer();
+
                 Button balance = (Button) hbox.getChildren().get(0);
                 Button deposit = (Button) hbox.getChildren().get(1);
                 Button withdraw = (Button) hbox.getChildren().get(2);
@@ -206,6 +217,35 @@ public class Main extends Application {
         }).start();
     }
 
+    private void setUpController(Label label){
+
+
+        controller = new Controller(label, null, new BankClient(BankServer.getPort()));
+        controller.setBankServer(BankServer.getInstance(10));
+        BankServer.getInstance(10).setController(controller);
+        //bankServer.setController(controller);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //controller = new Controller(label, bankServer, bankClient);
+                controller.startServer();
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                controller.startClient();
+            }
+        }).start();
+        /*controller = new Controller(label, bankServer);
+        controller.startServer();*/
+    }
+
+    private void setUpClient(){
+
+    }
+
     private BorderPane setUpScene(){
         BorderPane pane = new BorderPane();
         HBox hbox = addHBox();
@@ -213,7 +253,11 @@ public class Main extends Application {
         VBox vbox = addVBox();
 
         setButtonListeners(hbox, vbox);
+        BankServer server = BankServer.getInstance(10);
+        server.setController(controller);
+        setUpController((Label) vbox.getChildren().get(0));
         setUpServer(hbox);
+
 
         pane.setBottom(hbox);
         pane.setCenter(vbox);
@@ -236,9 +280,9 @@ public class Main extends Application {
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         setPrimaryStage(primaryStage);
 
-        bank = new Bank();
+        /*bank = new Bank();
         for(int i = 0; i < 10; i++)
-            bank.addAccount();
+            bank.addAccount();*/
 
         Parent root = setUpScene();
         primaryStage.setTitle("Hello World");
