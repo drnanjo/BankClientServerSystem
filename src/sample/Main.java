@@ -13,13 +13,19 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.net.ServerSocket;
 
 //import java.awt.*;
 
 public class Main extends Application {
 
+    private static Stage pStage;
     private Bank bank;
+    private BankServer server = null;
     //private VBox vbox;
 
     private HBox addHBox(){
@@ -64,6 +70,17 @@ public class Main extends Application {
         return vbox;
     }
 
+    private void showPopup(String msg){
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(pStage);
+        VBox dialogBox = new VBox(20);
+        dialogBox.getChildren().add(new Text(msg));
+        Scene dialogScene = new Scene(dialogBox, 300, 50);
+        dialog.setScene(dialogScene);
+        dialog.show();
+    }
+
     private void setButtonListeners(HBox hbox, VBox vbox){
         //Can use index 0 - 2 because there are only 3 buttons and they inserted in that order
         Button balance = (Button) hbox.getChildren().get(0);
@@ -73,35 +90,59 @@ public class Main extends Application {
         balance.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                TextField account = (TextField) vbox.getChildren().get(2);
-                Label balance = (Label) vbox.getChildren().get(0);
-                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+
+                if(server == null)
+                    showPopup(" Client has not been connected to server yet");
+                else {
+                    TextField account = (TextField) vbox.getChildren().get(2);
+                    Label balance = (Label) vbox.getChildren().get(0);
+                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                }
             }
         });
 
         deposit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                TextField account = (TextField) vbox.getChildren().get(2);
-                Label balance = (Label) vbox.getChildren().get(0);
-                TextField amount = (TextField) vbox.getChildren().get(4);
 
-                bank.deposit(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
-                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                if(server == null)
+                    showPopup(" Client has not been connected to server yet");
+                else {
+                    TextField account = (TextField) vbox.getChildren().get(2);
+                    Label balance = (Label) vbox.getChildren().get(0);
+                    TextField amount = (TextField) vbox.getChildren().get(4);
+
+                    bank.deposit(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
+                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                }
             }
         });
 
         withdraw.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                TextField account = (TextField) vbox.getChildren().get(2);
-                Label balance = (Label) vbox.getChildren().get(0);
-                TextField amount = (TextField) vbox.getChildren().get(4);
 
-                bank.withdraw(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
-                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                if(server == null)
+                    showPopup(" Client has not been connected to server yet");
+                else {
+                    TextField account = (TextField) vbox.getChildren().get(2);
+                    Label balance = (Label) vbox.getChildren().get(0);
+                    TextField amount = (TextField) vbox.getChildren().get(4);
+
+                    bank.withdraw(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
+                    balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+                }
             }
         });
+    }
+
+    private void setUpServer(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }).start();
     }
 
     private BorderPane setUpScene(){
@@ -118,18 +159,26 @@ public class Main extends Application {
         return pane;
     }
 
+    private static void setPrimaryStage(Stage stage){
+        pStage = stage;
+    }
+
+    private static Stage getPrimaryStage(){
+        return pStage;
+    }
+
 
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        setPrimaryStage(primaryStage);
 
         bank = new Bank();
         for(int i = 0; i < 10; i++)
             bank.addAccount();
 
         Parent root = setUpScene();
-
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 500, 300));
         primaryStage.show();
