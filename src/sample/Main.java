@@ -1,6 +1,8 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -16,6 +18,9 @@ import javafx.stage.Stage;
 //import java.awt.*;
 
 public class Main extends Application {
+
+    private Bank bank;
+    //private VBox vbox;
 
     private HBox addHBox(){
         HBox hbox = new HBox();
@@ -48,20 +53,64 @@ public class Main extends Application {
         TextField textAccount = new TextField();
 
         Label balance = new Label("Balance: ");
-        TextField textBalance = new TextField();
+        //TextField textBalance = new TextField();
 
         Label amount = new Label("Amount: ");
         TextField textAmount = new TextField();
 
-        vbox.getChildren().addAll(account, textAccount, balance, textBalance, amount, textAmount);
+        //vbox.getChildren().addAll(account, textAccount, balance, textBalance, amount, textAmount);
+        vbox.getChildren().addAll(balance, account, textAccount, amount, textAmount);
 
         return vbox;
+    }
+
+    private void setButtonListeners(HBox hbox, VBox vbox){
+        //Can use index 0 - 2 because there are only 3 buttons and they inserted in that order
+        Button balance = (Button) hbox.getChildren().get(0);
+        Button deposit = (Button) hbox.getChildren().get(1);
+        Button withdraw = (Button) hbox.getChildren().get(2);
+
+        balance.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TextField account = (TextField) vbox.getChildren().get(2);
+                Label balance = (Label) vbox.getChildren().get(0);
+                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+            }
+        });
+
+        deposit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TextField account = (TextField) vbox.getChildren().get(2);
+                Label balance = (Label) vbox.getChildren().get(0);
+                TextField amount = (TextField) vbox.getChildren().get(4);
+
+                bank.deposit(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
+                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+            }
+        });
+
+        withdraw.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TextField account = (TextField) vbox.getChildren().get(2);
+                Label balance = (Label) vbox.getChildren().get(0);
+                TextField amount = (TextField) vbox.getChildren().get(4);
+
+                bank.withdraw(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
+                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+            }
+        });
     }
 
     private BorderPane setUpScene(){
         BorderPane pane = new BorderPane();
         HBox hbox = addHBox();
+        //VBox vbox = addVBox();
         VBox vbox = addVBox();
+
+        setButtonListeners(hbox, vbox);
 
         pane.setBottom(hbox);
         pane.setCenter(vbox);
@@ -74,7 +123,13 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+
+        bank = new Bank();
+        for(int i = 0; i < 10; i++)
+            bank.addAccount();
+
         Parent root = setUpScene();
+
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 500, 300));
         primaryStage.show();
