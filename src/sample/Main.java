@@ -97,13 +97,17 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
 
-                if(server == null)
+                TextField account = (TextField) vbox.getChildren().get(2);
+                Label balance = (Label) vbox.getChildren().get(0);
+                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+
+                /*if(server == null)
                     showPopup(" Client has not been connected to server yet");
                 else {
                     TextField account = (TextField) vbox.getChildren().get(2);
                     Label balance = (Label) vbox.getChildren().get(0);
                     balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
-                }
+                }*/
             }
         });
 
@@ -111,7 +115,14 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
 
-                if(server == null)
+                TextField account = (TextField) vbox.getChildren().get(2);
+                Label balance = (Label) vbox.getChildren().get(0);
+                TextField amount = (TextField) vbox.getChildren().get(4);
+
+                bank.deposit(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
+                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+
+                /*if(server == null)
                     showPopup(" Client has not been connected to server yet");
                 else {
                     TextField account = (TextField) vbox.getChildren().get(2);
@@ -120,7 +131,7 @@ public class Main extends Application {
 
                     bank.deposit(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
                     balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
-                }
+                }*/
             }
         });
 
@@ -128,7 +139,14 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
 
-                if(server == null)
+                TextField account = (TextField) vbox.getChildren().get(2);
+                Label balance = (Label) vbox.getChildren().get(0);
+                TextField amount = (TextField) vbox.getChildren().get(4);
+
+                bank.withdraw(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
+                balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
+
+                /*if(server == null)
                     showPopup(" Client has not been connected to server yet");
                 else {
                     TextField account = (TextField) vbox.getChildren().get(2);
@@ -137,7 +155,7 @@ public class Main extends Application {
 
                     bank.withdraw(Integer.valueOf(account.getText()), Integer.valueOf(amount.getText()));
                     balance.setText("Balance: " + bank.getBalance(Integer.valueOf(account.getText())));
-                }
+                }*/
             }
         });
 
