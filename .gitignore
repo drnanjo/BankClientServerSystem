@@ -1,0 +1,12 @@
+# Jetbrains
+/ out /
+
+#Jebrains
+/ src /
+
+#Jetbrains
+/ .idea /
+
+#Jetbrains
+BankClientServerSystem.iml
+
