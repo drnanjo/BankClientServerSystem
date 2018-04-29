@@ -14,7 +14,7 @@ public class BankServer {
     private ServerSocket provider;
     private static BankServer bankServerInstance = null;
     private Controller controller;
-    private static int port = 1025;
+    private  int port;
 
     public static BankServer getInstance(int num){
         if(bankServerInstance == null)
@@ -25,10 +25,15 @@ public class BankServer {
 
     private BankServer(int num){
         bank = new Bank(num);
+        port = 1025;
     }
 
     public void setController(Controller controller){
         this.controller = controller;
+    }
+
+    public void changePort(){
+        port = port + 1;
     }
 
     public Bank getBank(){
@@ -43,14 +48,17 @@ public class BankServer {
         service.sendCommand(command);
     }
 
-    public static int getPort(){
+    public  int getPort(){
         return port;
     }
 
     public void startServer(){
         try {
             //COME BACK HERE TO MAKE IT ACCEPT MULTIPLE CONNECTIONS
-                provider = new ServerSocket(port++, 10);
+
+                provider = new ServerSocket(port, 10);
+                changePort();
+
                 System.out.println("Waiting for connection");
 
                 connection = provider.accept();

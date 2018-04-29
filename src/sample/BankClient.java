@@ -23,6 +23,23 @@ public class BankClient implements Runnable{
             outputStream.writeObject(command);
             outputStream.flush();
 
+            String[] tokens = command.split("\\s+");
+            if(tokens[0].equals("quit")) {
+                quit();
+            }
+
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void quit(){
+        try {
+
+            outputStream.close();
+            inputStream.close();
+            request.close();
 
         } catch (IOException e){
             e.printStackTrace();
@@ -33,8 +50,11 @@ public class BankClient implements Runnable{
     public void run() {
         try{
             System.out.println("Trying to connect to server");
+
             request = new Socket("localhost", port);
             System.out.println("Connected to localhost in port " + port);
+            //BankServer.changePort();
+            //System.out.println(BankServer.getPort());
 
             outputStream = new ObjectOutputStream(request.getOutputStream());
             outputStream.flush();

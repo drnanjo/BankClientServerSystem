@@ -30,7 +30,7 @@ public class Controller {
     }
 
     public int getPort(){
-        return BankServer.getPort();
+        return bankServer.getPort();
     }
 
     public void setBankClient(BankClient client){
