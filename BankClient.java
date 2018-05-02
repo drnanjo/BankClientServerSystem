@@ -69,6 +69,5 @@ public class BankClient implements Runnable {
 
         }
           catch (Exception e) { System.out.println("Socket closed"); }
-          //catch (ClassNotFoundException m) { m.printStackTrace(); }
     }
 }
