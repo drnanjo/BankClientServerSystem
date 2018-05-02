@@ -16,6 +16,7 @@ public class BankService implements Runnable {
         this.bank = bank;
     }
 
+    //Closes streams and socket connection
     public void quit(){
         try{
             read = false;
@@ -68,6 +69,7 @@ public class BankService implements Runnable {
             outputStream = new ObjectOutputStream(s.getOutputStream());
             inputStream = new ObjectInputStream(s.getInputStream());
 
+            //Reads while connection is open based on boolean flag
             while(read){
                 String[] tokens = (String[]) inputStream.readObject();
 

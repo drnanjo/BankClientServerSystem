@@ -40,10 +40,6 @@ public class Main extends Application {
         Button buttonQuit = new Button("Quit");
         buttonQuit.setPrefSize(100, 20);
 
-        /*buttonBalance.setDisable(true);
-        buttonDeposit.setDisable(true);
-        buttonWithdraw.setDisable(true);*/
-
         hbox.getChildren().addAll(buttonBalance, buttonDeposit, buttonWithdraw, buttonQuit);
 
         return hbox;
@@ -59,7 +55,6 @@ public class Main extends Application {
 
         Label accountNum = new Label("Account Number: ");
         Label balance = new Label("Balance: ");
-        //TextField textBalance = new TextField();
 
         Label amount = new Label("Amount: ");
         TextField textAmount = new TextField();
@@ -74,7 +69,6 @@ public class Main extends Application {
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(pStage);
         VBox dialogBox = new VBox(20);
-        //dialogBox.getChildren().add(new Text(msg));
 
         Button close = new Button("Close");
         close.setOnAction(new EventHandler<ActionEvent>() {
@@ -116,7 +110,6 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
 
                 TextField account = (TextField) vbox.getChildren().get(3);
-                //Label balance = (Label) vbox.getChildren().get(1);
                 TextField amount = (TextField) vbox.getChildren().get(5);
 
                 if(account.getText().equals("") || amount.getText().equals(""))
@@ -132,7 +125,6 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
 
                 TextField account = (TextField) vbox.getChildren().get(3);
-                //Label balance = (Label) vbox.getChildren().get(1);
                 TextField amount = (TextField) vbox.getChildren().get(5);
 
                 if(account.getText().equals("") || amount.getText().equals(""))
@@ -153,19 +145,9 @@ public class Main extends Application {
     }
 
     private void setUpController(Label account, Label balance){
-        //BankServer bankServer = BankServer.getInstance();
-        //BankClient bankClient = new BankClient(bankServer.getPort());
         BankClient bankClient = new BankClient();
-        //controller = new Controller(balance, bankServer, bankClient);
         controller = new Controller(account, balance, bankClient);
         bankClient.setController(controller);
-
-        /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-                controller.startServer();
-            }
-        }).start();*/
 
         new Thread(new Runnable() {
             @Override
@@ -182,11 +164,6 @@ public class Main extends Application {
 
         setButtonListeners(hbox, vbox);
         setUpController((Label) vbox.getChildren().get(0), (Label) vbox.getChildren().get(1));
-        /*BankServer server = BankServer.getInstance(10);
-        server.setController(controller);
-        setUpController((Label) vbox.getChildren().get(0));
-        setUpServer(hbox);*/
-
 
         pane.setBottom(hbox);
         pane.setCenter(vbox);
@@ -200,7 +177,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
 
         setPrimaryStage(primaryStage);
 

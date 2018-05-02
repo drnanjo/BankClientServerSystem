@@ -32,6 +32,7 @@ public class BankClient implements Runnable {
         } catch(IOException e) { System.out.println("Connection closed"); }
     }
 
+    //Closes all streams and socket connection
     public void quit(){
         try {
             read = false;
@@ -48,6 +49,7 @@ public class BankClient implements Runnable {
 
             System.out.println("client: " + port);
 
+            //Waits for server connection
             while(s == null)
                 s = new Socket("localhost", port);
 
@@ -56,6 +58,7 @@ public class BankClient implements Runnable {
             outputStream = new ObjectOutputStream(s.getOutputStream());
             inputStream = new ObjectInputStream(s.getInputStream());
 
+            //Keeps reading from stream while connection is still open based on boolean flag
             while(read){
                 String result = (String) inputStream.readObject();
 
